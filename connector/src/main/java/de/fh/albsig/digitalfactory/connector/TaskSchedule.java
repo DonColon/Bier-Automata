@@ -50,8 +50,8 @@ public final class TaskSchedule
 			values.getString("E_DESCRIPTION"),
 			values.getDouble("E_TEMP"),
 			values.getLong("E_DAUER"),
-			(Boolean) values.getValue("E_SWITCH1"),
-			(Boolean) values.getValue("E_SWITCH1")
+			Boolean.valueOf(String.valueOf(values.getValue("E_SWITCH1"))),
+			Boolean.valueOf(String.valueOf(values.getValue("E_SWITCH2")))
 		);
 		return task;
 	}
