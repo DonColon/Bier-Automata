@@ -10,11 +10,15 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.fh.albsig.digitalfactory.connector.TaskSchedule;
+import de.fh.albsig.digitalfactory.connector.model.Confirmation;
 import de.fh.albsig.digitalfactory.connector.model.Task;
 
-public class MqttClientMain {
+public class MqttClientMain
+{
 
-	public static void main(final String[] args) throws MqttException {
+	public static void main(final String[] args)
+		throws MqttException
+	{
 		final IMqttClient mqttClient = new MqttClient(
 			String.format("tcp://%s:%s", MqttConstants.BROKER, MqttConstants.BROKER_PORT),
 			MqttClient.generateClientId()
@@ -39,6 +43,14 @@ public class MqttClientMain {
 			System.out.println(json);
 
 			mqttClient.publish(MqttConstants.TO_SPS, json.getBytes(), 1, true);
+		});
+
+		mqttClient.subscribe(MqttConstants.TO_SAP, 1, (topic, message) -> {
+			System.out.println(new String(message.getPayload()));
+
+			final Confirmation confirmation = new ObjectMapper().readValue(new String(message.getPayload()), Confirmation.class);
+
+			System.out.println(confirmation);
 		});
 
 
