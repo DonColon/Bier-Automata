@@ -9,6 +9,8 @@ public final class Confirmation
 	private boolean successful;
 
 
+	public Confirmation() {}
+
 	public Confirmation(final String orderNumber, final boolean successful)
 	{
 		this.orderNumber = orderNumber;

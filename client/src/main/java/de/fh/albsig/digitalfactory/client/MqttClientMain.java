@@ -20,43 +20,52 @@ public class MqttClientMain
 		throws MqttException
 	{
 		final IMqttClient mqttClient = new MqttClient(
-			String.format("tcp://%s:%s", MqttConstants.BROKER, MqttConstants.BROKER_PORT),
-			MqttClient.generateClientId()
-		);
+				String.format("tcp://%s:%s", MqttConstants.BROKER, MqttConstants.BROKER_PORT), "SAP");
 
 		final MqttConnectOptions options = new MqttConnectOptions();
 		options.setAutomaticReconnect(true);
-		options.setCleanSession(true);
+		options.setCleanSession(false);
 		options.setConnectionTimeout(10);
-
 		mqttClient.connect(options);
 
-		mqttClient.subscribe(MqttConstants.START_PROCESS, (topic, message) -> {
-			final String orderNumber = new String(message.getPayload());
-			System.out.println(orderNumber);
+		mqttClient.subscribe(MqttConstants.START_PROCESS, 1, (topic, message) -> {
+			try {
+				final String orderNumber = new String(message.getPayload());
+				System.out.println("Ordernumber from StartProcess: " + orderNumber);
 
-			final TaskSchedule schedule = new TaskSchedule();
-			final Task task = schedule.nextTask(orderNumber);
-			System.out.println(task);
+				final TaskSchedule schedule = new TaskSchedule();
+				final Task task = schedule.nextTask(orderNumber);
 
-			final String json = new ObjectMapper().writeValueAsString(task);
-			System.out.println(json);
+				System.out.println(task);
 
-			mqttClient.publish(MqttConstants.TO_SPS, json.getBytes(), 1, true);
+				final String json = new ObjectMapper().writeValueAsString(task);
+				System.out.println(json);
+
+				mqttClient.publish(MqttConstants.TO_SPS, json.getBytes(), 1, false);
+			} catch (final Throwable t) {
+				t.printStackTrace(System.err);
+			}
 		});
 
 		mqttClient.subscribe(MqttConstants.TO_SAP, 1, (topic, message) -> {
-			System.out.println(new String(message.getPayload()));
+			try {
+				final String confirmationStr = new String(message.getPayload());
 
-			final Confirmation confirmation = new ObjectMapper().readValue(new String(message.getPayload()), Confirmation.class);
+				System.out.println(confirmationStr);
 
-			System.out.println(confirmation);
+				final Confirmation confirmation = new ObjectMapper().readValue(confirmationStr, Confirmation.class);
+
+				System.out.println(confirmation);
+			} catch (final Throwable t) {
+				t.printStackTrace(System.err);
+			}
 		});
 
-
 		System.out.println("Press enter to exit!");
+
 		final Scanner s = new Scanner(System.in);
 		s.nextLine();
+		s.close();
 
 		System.exit(0);
 	}
