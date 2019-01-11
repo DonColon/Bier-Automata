@@ -2,18 +2,21 @@ package de.fh.albsig.digitalfactory.connector.model;
 
 import java.util.Objects;
 
+
 public final class Confirmation
 {
 
 	private String orderNumber;
+	private String transactionKey;
 	private boolean successful;
 
 
 	public Confirmation() {}
 
-	public Confirmation(final String orderNumber, final boolean successful)
+	public Confirmation(final String orderNumber, final String transactionKey, final boolean successful)
 	{
 		this.orderNumber = orderNumber;
+		this.transactionKey = transactionKey;
 		this.successful = successful;
 	}
 
@@ -21,7 +24,9 @@ public final class Confirmation
 	@Override
 	public String toString()
 	{
-		return "Confirmation [orderNumber=" + this.orderNumber + ", successful=" + this.successful + "]";
+		return "Confirmation [orderNumber=" + this.orderNumber
+				+ ", transactionKey=" + this.transactionKey
+				+ ", successful=" + this.successful + "]";
 	}
 
 	@Override
@@ -35,13 +40,14 @@ public final class Confirmation
 
 		final Confirmation confirmation = (Confirmation) object;
 		return Objects.equals(this.orderNumber, confirmation.getOrderNumber())
+			&& Objects.equals(this.transactionKey, confirmation.getTransactionKey())
 			&& Objects.equals(this.successful, confirmation.isSuccessful());
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(this.orderNumber, this.successful);
+		return Objects.hash(this.orderNumber, this.transactionKey, this.successful);
 	}
 
 
@@ -53,6 +59,16 @@ public final class Confirmation
 	public void setOrderNumber(final String orderNumber)
 	{
 		this.orderNumber = orderNumber;
+	}
+
+	public String getTransactionKey()
+	{
+		return this.transactionKey;
+	}
+
+	public void setTransactionKey(final String transactionKey)
+	{
+		this.transactionKey = transactionKey;
 	}
 
 	public boolean isSuccessful()

@@ -6,15 +6,17 @@ import java.util.Objects;
 public final class Task
 {
 
-	private final String transactionKey;
-	private final String description;
+	private String transactionKey;
+	private String description;
 
-	private final double targetTemperature;
-	private final long duration;
+	private double targetTemperature;
+	private long duration;
 
-	private final boolean stirrerEnabled;
-	private final boolean heaterEnabled;
+	private boolean stirrerEnabled;
+	private boolean heaterEnabled;
 
+
+	public Task() {}
 
 	public Task(final String transactionKey, final String description,
 				final double targetTemperature, final long duration,
@@ -72,9 +74,19 @@ public final class Task
 		return this.transactionKey;
 	}
 
+	public void setTransactionKey(final String transactionKey)
+	{
+		this.transactionKey = transactionKey;
+	}
+
 	public String getDescription()
 	{
 		return this.description;
+	}
+
+	public void setDescription(final String description)
+	{
+		this.description = description;
 	}
 
 	public double getTargetTemperature()
@@ -82,9 +94,19 @@ public final class Task
 		return this.targetTemperature;
 	}
 
+	public void setTargetTemperature(final double targetTemperature)
+	{
+		this.targetTemperature = targetTemperature;
+	}
+
 	public long getDuration()
 	{
 		return this.duration;
+	}
+
+	public void setDuration(final long duration)
+	{
+		this.duration = duration;
 	}
 
 	public boolean isStirrerEnabled()
@@ -92,9 +114,19 @@ public final class Task
 		return this.stirrerEnabled;
 	}
 
+	public void setStirrerEnabled(final boolean stirrerEnabled)
+	{
+		this.stirrerEnabled = stirrerEnabled;
+	}
+
 	public boolean isHeaterEnabled()
 	{
 		return this.heaterEnabled;
+	}
+
+	public void setHeaterEnabled(final boolean heaterEnabled)
+	{
+		this.heaterEnabled = heaterEnabled;
 	}
 
 }

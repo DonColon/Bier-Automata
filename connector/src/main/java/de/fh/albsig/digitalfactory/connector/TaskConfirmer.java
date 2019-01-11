@@ -7,17 +7,17 @@ import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoParameterList;
 import com.sap.conn.jco.JCoRepository;
 
-import de.fh.albsig.digitalfactory.connector.model.Task;
+import de.fh.albsig.digitalfactory.connector.model.Confirmation;
 
 
-public final class TaskSchedule
+public final class TaskConfirmer
 {
 
 	private final JCoDestination destination;
 	private final JCoFunction function;
 
 
-	public TaskSchedule()
+	public TaskConfirmer()
 		throws JCoException
 	{
 		this.destination = JCoDestinationManager.getDestination(JCoConstants.JCO_DESTINATION_PATH);
@@ -25,35 +25,22 @@ public final class TaskSchedule
 
 		final JCoRepository repository = this.destination.getRepository();
 
-		this.function = repository.getFunction(JCoConstants.NEXT_TASK_BY_ORDERNUMBER);
+		this.function = repository.getFunction(JCoConstants.CONFIRM_TASK);
 	}
 
 
-	public Task nextTask(final String orderNumber)
+	public String confirm(final Confirmation confirmation)
 		throws JCoException
 	{
 		final JCoParameterList input = this.function.getImportParameterList();
-		input.setValue(JCoConstants.I_ORDERNUMBER, orderNumber);
+		input.setValue(JCoConstants.I_ORDERNUMBER, confirmation.getOrderNumber());
+		input.setValue(JCoConstants.I_TRANSACTIONKEY, confirmation.getTransactionKey());
 
 		this.function.execute(this.destination);
 
 		final JCoParameterList output = this.function.getExportParameterList();
 
-		return this.parseTask(output);
-	}
-
-
-	private Task parseTask(final JCoParameterList values)
-	{
-		final Task task = new Task(
-			values.getString(JCoConstants.E_TRANSACTIONKEY),
-			values.getString(JCoConstants.E_DESCRIPTION),
-			values.getDouble(JCoConstants.E_TEMPERATURE),
-			values.getLong(JCoConstants.E_DURATION),
-			Boolean.valueOf(values.getString(JCoConstants.E_STIRRER_ENABLED)),
-			Boolean.valueOf(values.getString(JCoConstants.E_HEATER_ENABLED))
-		);
-		return task;
+		return output.getString(JCoConstants.E_CONFIRMATION_MESSAGE);
 	}
 
 }
