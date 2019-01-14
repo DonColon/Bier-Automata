@@ -14,14 +14,11 @@ import de.fh.albsig.digitalfactory.connector.TaskSchedule;
 import de.fh.albsig.digitalfactory.connector.model.Confirmation;
 import de.fh.albsig.digitalfactory.connector.model.Task;
 
-public class MqttClientMain
-{
+public class MqttClientMain {
 
-	public static void main(final String[] args)
-		throws MqttException
-	{
+	public static void main(final String[] args) throws MqttException {
 		final IMqttClient mqttClient = new MqttClient(
-				String.format("tcp://%s:%s", MqttConstants.BROKER, MqttConstants.BROKER_PORT), "SAP");
+				String.format("tcp://%s:%s", MqttConstants.BROKER, MqttConstants.BROKER_PORT), "SAP2");
 
 		final MqttConnectOptions options = new MqttConnectOptions();
 		options.setAutomaticReconnect(true);
@@ -81,6 +78,7 @@ public class MqttClientMain
 		s.nextLine();
 		s.close();
 
+		mqttClient.close();
 		System.exit(0);
 	}
 
